@@ -79,6 +79,41 @@ union DatabaseType {
 
 exports.DatabaseType = DatabaseType;
 
+
+/**
+ * Controls the ordering direction of the Cursor
+ */
+union OrderingDirection {
+  Ascending,
+  Descending
+} deriving (adt.Base, adt.Cata)
+
+exports.OrderingDirection = OrderingDirection
+
+
+/**
+ * Defines an ordering for the Cursor
+ */
+data Ordering {
+  field : *,
+  direction : OrderingDirection
+} deriving (adt.Base)
+
+exports.Ordering = Ordering
+
+
+/**
+ * Provides a way of writing queries for the database.
+ */
+union Query {
+  And(Query, Query),
+  Or(Query, Query),
+  Eq(*, DatabaseType)
+} deriving (adt.Base, adt.Cata)
+
+exports.Query = Query
+
+
 // -- Core types -------------------------------------------------------
 
 var FieldType = Base.derive({
