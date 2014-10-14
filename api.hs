@@ -3,20 +3,20 @@ type FieldType a where
   name       :: String  -- The name of the field in JS
   dbName     :: String  -- The name of the field in the Database
   validation :: a → Validation(FieldValidationError, a)
-  marshall   :: a → DatabaseType
-  unmarshall :: DatabaseType → a
+  marshall   :: a → Validation(MarshallingError, DatabaseType)
+  unmarshall :: DatabaseType → Validation(UnmarshallingError, a)
 
 -- Which maps values to database types
-type DatabaseType = Null
-                  | Text String
-                  | Double Number
-                  | Int64 Number
-                  | Boolean Boolean
-                  | Date Date
-                  | Array [DatabaseType]
-                  | Map { String -> DatabaseType }
-                  | ObjectID String                     -- for MongoDB
-                  | Custom Buffer                       -- Anything else
+type DatabaseType = DbNull
+                  | DbText String
+                  | DbDouble Number
+                  | DbInt32 Number
+                  | DbBoolean Boolean
+                  | DbDate Date
+                  | DbArray [DatabaseType]
+                  | DbMap { String -> DatabaseType }
+                  | DbObjectId String                     -- for MongoDB
+                  | DbCustom Buffer                       -- Anything else
 
 -- And we have a layer on top to provide something similar for all DBs
 type Schema = [FieldType]

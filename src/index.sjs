@@ -20,7 +20,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 /**
- * A safe database modelling layer with validation and marshalling for multiple database backends.
+ * A safe database modelling layer with validation and marshalling for multiple
+ * database backends.
  *
  * @module lib/index
  */

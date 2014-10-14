@@ -33,6 +33,10 @@ dist/$(PACKAGE).umd.min.js: dist/$(PACKAGE).umd.js
 $(LIB_DIR)/%.js: $(SRC_DIR)/%.sjs
 	mkdir -p $(dir $@)
 	$(sjs) --readable-names \
+	       --module macros.operators/macros \
+	       --module adt-simple/macros \
+	       --module sparkler/macros \
+	       --module sweet-fantasies/src/do \
 	       --sourcemap      \
 	       --output $@      \
 	       $<
