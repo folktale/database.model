@@ -19,7 +19,12 @@ type DatabaseType = DbNull
                   | DbCustom Buffer                       -- Anything else
 
 -- And we have a layer on top to provide something similar for all DBs
-type Schema = [FieldType]
+type Schema a where
+  name       :: String                      -- Name of the table in the DB
+  fields     :: [FieldType]
+  marshall   :: a → Validation(MarshallingError, DatabaseType)
+  unmarshall :: DatabaseType → Validation(UnmarshallingError, a)
+  
 
 -- Collection and Cursor are specific to the database backend
 type Collection a where
