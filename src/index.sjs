@@ -25,3 +25,9 @@
  *
  * @module lib/index
  */
+var extend = require('xtend')
+
+module.exports = extend(
+  require('./schema'),
+  require('./types')
+)

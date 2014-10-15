@@ -28,11 +28,13 @@
 // -- Dependencies -----------------------------------------------------
 var Base       = require('boo').Base;
 var curry      = require('core.lambda').curry;
+var unary      = require('core.arity').unary;
+var binary     = require('core.arity').binary;
 var Validation = require('data.validation');
 
-
 // -- Aliases ----------------------------------------------------------
-var {Success, Failure} = Validation;
+var Success = Validation.Success;
+var Failure = Validation.Failure;
 
 // -- Helpers ----------------------------------------------------------
 
@@ -51,7 +53,8 @@ function toArray() {
  * @summary [Validation(a, b)] → Validation([a], [b])
  */
 function collect(xs) {
-  return xs.map(forceNEL).reduce(ap, Success(curry(xs.length, toArray)))
+  return xs.map(forceNEL).reduce( binary(ap)
+                                , Success(curry(xs.length, toArray)))
 }
 
 /**
@@ -71,7 +74,9 @@ function ap(f, a) {
  * @summary [a] → [a]
  */
 function forceNEL(a) {
-  return Array.isArray(a)? a : [a]
+  return a.leftMap(function(va) {
+    return Array.isArray(va)? va : [va]
+  })
 }
 
 /**
@@ -138,7 +143,7 @@ var Schema = Base.derive({
    * @summary a → Validation(MarshallingError, [(FieldType, DatabaseType)])
    */
   marshall: function(data) {
-    return collect(this.fields.map(marshall(data))).map(zip(this.fields))
+    return collect(this.fields.map(unary(marshall(data)))).map(zip(this.fields))
   }
 
 , /**
