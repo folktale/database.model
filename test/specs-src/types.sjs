@@ -21,9 +21,20 @@
 
 var _ = require('../../lib/types');
 var $ = require('alright');
-var {forAll, sized, choice, data: { Any }} = require('claire');
+var {forAll, sized, asGenerator, choice, data, transform:map } = require('claire');
 
-var Anys = sized(λ[10], Any);
+var Anys = sized(λ[10], data.Any);
+var TDbNull     = asGenerator(_.DatabaseType.DbNull);
+var TDbText     = map(_.DatabaseType.DbText, data.Str);
+var TDbDouble   = map(_.DatabaseType.DbDouble, data.Num);
+var TDbInt32    = map(_.DatabaseType.DbInt32, data.Int);
+var TDbBoolean  = map(_.DatabaseType.DbBoolean, data.Bool);
+var TDbArray = λ(x) -> map(_.DatabaseType.DbArray, data.Array(x));
+var TDbMap   = λ(x) -> map(_.DatabaseType.DbMap, data.Object(x));
+var TDbObjectId = map(_.DatabaseType.DbObjectId, data.Id);
+
+var TDbTypes = choice(TDbNull, TDbText, TDbDouble, TDbInt32, TDbBoolean, TDbArray(Anys), TDbMap(Anys), TDbObjectId)
+
 
 module.exports = spec 'Types' {
   spec 'Fields' {
@@ -66,6 +77,11 @@ module.exports = spec 'Types' {
         _.FtNull.unmarshall(_.DatabaseType.DbNull).get() => null
       }
 
+      it '#unmarshall(a) should fail for non DbNull' {
+        forAll(TDbTypes, Anys).given(λ[!#.isDbNull]).satisfy(λ(a, b) ->
+          !!(_.FtNull.unmarshall(a).getOrElse(b) => b)
+        ).asTest()()
+      }
     }
   }
 }
