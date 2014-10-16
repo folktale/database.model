@@ -141,7 +141,7 @@ var FieldType = Base.derive({
    * @summary a → Validation(MarshallingError, DatabaseType)
    */
   marshall: function(a) {
-    throw Failure(new Error('not implemented'));
+    return Failure(new Error('not implemented'));
   }
 
 , /**
@@ -150,7 +150,7 @@ var FieldType = Base.derive({
    * @summary DatabaseType → Validation(UnmarshallingError, a)
    */
   unmarshall: function(a) {
-    throw Failure(new Error('not implemented'));
+    return Failure(new Error('not implemented'));
   }
 });
 exports.FieldType = FieldType;
