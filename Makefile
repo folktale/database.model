@@ -37,7 +37,6 @@ $(LIB_DIR)/%.js: $(SRC_DIR)/%.sjs
 	       --module adt-simple/macros \
 	       --module sparkler/macros \
 	       --module sweet-fantasies/src/do \
-	       --sourcemap      \
 	       --output $@      \
 	       $<
 
@@ -45,6 +44,9 @@ $(TEST_BLD)/%.js: $(TEST_DIR)/%.sjs
 	mkdir -p $(dir $@)
 	$(sjs) --readable-names        \
 	       --module alright/macros \
+	       --module hifive/macros  \
+	       --module es6-macros/macros/destructure \
+	       --module lambda-chop/macros \
 	       --output $@             \
 	       $<
 
@@ -66,8 +68,8 @@ clean-docs:
 clean:
 	rm -rf dist build
 
-test: $(TEST_TGT)
-	node test/tap
+test: all $(TEST_TGT)
+	node test/run
 
 package: documentation bundle minify
 	mkdir -p dist/$(PACKAGE)-$(VERSION)
